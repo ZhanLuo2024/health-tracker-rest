@@ -2,9 +2,14 @@ package ie.setu.domain.repository
 
 import ie.setu.domain.User
 import ie.setu.domain.db.Users
+import ie.setu.utils.mapToUser
+// sql
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import ie.setu.utils.mapToUser
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class UserDAO {
 
@@ -26,15 +31,34 @@ class UserDAO {
     }
 
     fun save(user: User){
+        transaction {
+            Users.insert{
+                it[name] = user.name
+                it[email] = user.email
+            }
+        }
     }
 
     fun findByEmail(email: String) :User?{
-        return null
+        return transaction {
+            Users.selectAll().where { Users.email eq email }
+                .map{mapToUser(it)}
+                .firstOrNull()
+        }
     }
 
     fun delete(id: Int) {
+        return transaction{
+            Users.deleteWhere{ Users.id eq id }
+        }
     }
 
     fun update(id: Int, user: User){
+        transaction{
+            Users.update({Users.id eq id}) {
+                it[name] = user.name
+                it[email] = user.email
+            }
+        }
     }
 }
