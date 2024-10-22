@@ -17,10 +17,10 @@ object HealthTrackerController {
     }
 
     fun getUserByUserId(ctx: Context) {
-//        val user = userDao.getById(ctx.pathParam("user-id").toInt())
-//        if (user != null) {
-//            ctx.json(user)
-//        }
+        val user = userDao.findById(ctx.pathParam("user-id").toInt())
+        if (user != null) {
+            ctx.json(user)
+        }
     }
 
     fun addUser(ctx: Context) {
