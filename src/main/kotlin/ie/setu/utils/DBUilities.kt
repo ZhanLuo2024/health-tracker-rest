@@ -5,6 +5,8 @@ import ie.setu.domain.db.Users
 import org.jetbrains.exposed.sql.ResultRow
 import ie.setu.domain.Activity
 import ie.setu.domain.db.Activities
+import ie.setu.domain.db.WaterIntakes
+import ie.setu.domain.WaterIntake
 
 fun mapToUser(it: ResultRow) = User(
     id = it[Users.id],
@@ -20,4 +22,12 @@ fun mapToActivity(it: ResultRow) = Activity(
     started = it[Activities.started],
     calories = it[Activities.calories],
     userId = it[Activities.userId]
+)
+
+
+fun mapToWaterIntake(it: ResultRow) = WaterIntake(
+    id = it[WaterIntakes.id],
+    amount = it[WaterIntakes.amount],
+    recordedAt = it[WaterIntakes.recordedAt],
+    userId = it[WaterIntakes.userId]
 )
