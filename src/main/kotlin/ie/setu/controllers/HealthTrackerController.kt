@@ -1,16 +1,19 @@
 package ie.setu.controllers
 
-import ie.setu.domain.User
-import ie.setu.domain.repository.UserDAO
-import io.javalin.http.Context
-
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-
+import ie.setu.domain.Activity
+import ie.setu.domain.User
+import ie.setu.domain.repository.ActivityDAO
+import ie.setu.domain.repository.UserDAO
+import io.javalin.http.Context
 
 object HealthTrackerController {
 
     private val userDao = UserDAO()
+    private val activityDAO = ActivityDAO()
 
     fun getAllUsers(ctx: Context) {
         ctx.json(userDao.getAll())
@@ -30,23 +33,87 @@ object HealthTrackerController {
         ctx.json(user)
     }
 
-    fun getUserByEmail(ctx: Context) {
-        val user = userDao.findByEmail(ctx.pathParam("user-email").toString())
+    fun getUserByEmail(ctx: Context){
+        val user = userDao.findByEmail(ctx.pathParam("email"))
         if (user != null) {
             ctx.json(user)
         }
     }
 
-    fun deleteUser(ctx: Context) {
+    fun deleteUser(ctx: Context){
         userDao.delete(ctx.pathParam("user-id").toInt())
     }
 
-    fun updateUser(ctx: Context) {
+    fun updateUser(ctx: Context){
         val mapper = jacksonObjectMapper()
         val userUpdates = mapper.readValue<User>(ctx.body())
         userDao.update(
             id = ctx.pathParam("user-id").toInt(),
             user=userUpdates)
+    }
+
+    //--------------------------------------------------------------
+    // ActivityDAO specifics
+    //-------------------------------------------------------------
+
+    fun getAllActivities(ctx: Context) {
+        //mapper handles the deserialization of Joda date into a String.
+        val mapper = jacksonObjectMapper()
+            .registerModule(JodaModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        ctx.json(mapper.writeValueAsString( activityDAO.getAll() ))
+    }
+
+    fun getActivitiesByUserId(ctx: Context) {
+        if (userDao.findById(ctx.pathParam("user-id").toInt()) != null) {
+            val activities = activityDAO.findByUserId(ctx.pathParam("user-id").toInt())
+            if (activities.isNotEmpty()) {
+                //mapper handles the deserialization of Joda date into a String.
+                val mapper = jacksonObjectMapper()
+                    .registerModule(JodaModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                ctx.json(mapper.writeValueAsString(activities))
+            }
+        }
+    }
+
+    fun addActivity(ctx: Context) {
+        //mapper handles the serialisation of Joda date into a String.
+        val mapper = jacksonObjectMapper()
+            .registerModule(JodaModule())
+            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        val activity = mapper.readValue<Activity>(ctx.body())
+        activityDAO.save(activity)
+        ctx.json(activity)
+    }
+
+    fun getActivityById(ctx: Context) {
+        // Extracting the activity ID from the request path parameter named "activity-id"
+        try {
+            // Extracting the activity ID from the request path parameter named "activity-id"
+            val activityId = ctx.pathParam("activity-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid activity ID format")
+                return
+            }
+
+            // Using the activityDAO to find the activity with the given ID
+            val activity = activityDAO.findByActivityId(activityId)
+
+            if (activity != null) {
+                val mapper = jacksonObjectMapper()
+                    .registerModule(JodaModule())
+                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
+                // Respond with the serialized JSON representation of the activity
+                ctx.json(mapper.writeValueAsString(activity))
+            } else {
+                // If the activity is not found, return a 404 Not Found status with an error message
+                ctx.status(404).result("Activity not found")
+            }
+        } catch (e: Exception) {
+            // If an unexpected error occurs, return a 500 Internal Server Error
+            ctx.status(500).result("Internal server error")
+        }
     }
 
 }
