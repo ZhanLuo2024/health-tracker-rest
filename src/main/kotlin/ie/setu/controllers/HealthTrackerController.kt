@@ -115,5 +115,4 @@ object HealthTrackerController {
             ctx.status(500).result("Internal server error")
         }
     }
-
 }

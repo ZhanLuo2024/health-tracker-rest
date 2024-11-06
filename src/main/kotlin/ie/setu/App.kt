@@ -7,4 +7,5 @@ fun main(args: Array<String>) {
 
     DbConfig().getDbConnection()
     JavalinConfig().startJavalinService()
+
 }
