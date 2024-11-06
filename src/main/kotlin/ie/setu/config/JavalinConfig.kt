@@ -1,7 +1,8 @@
 package ie.setu.config
 
-import ie.setu.controllers.HealthTrackerController
 import ie.setu.routes.registerWaterIntakeRoutes
+import ie.setu.routes.registerUserRoutes
+import ie.setu.routes.registerActivityRoutes
 import io.javalin.Javalin
 import io.javalin.json.JavalinJackson
 import ie.setu.utils.jsonObjectMapper
@@ -24,18 +25,10 @@ class JavalinConfig {
 
     private fun registerRoutes(app: Javalin) {
         // user interface
-        app.get("/api/users", HealthTrackerController::getAllUsers)
-        app.get("/api/users/{user-id}", HealthTrackerController::getUserByUserId)
-        app.post("/api/users", HealthTrackerController::addUser)
-        app.delete("/api/users/{user-id}", HealthTrackerController::deleteUser)
-        app.patch("/api/users/{user-id}", HealthTrackerController::updateUser)
-        app.get("/api/users/email/{email}", HealthTrackerController::getUserByEmail)
+        registerUserRoutes(app)
 
         // activity interface
-        app.get("/api/activities", HealthTrackerController::getAllActivities)
-        app.post("/api/activities", HealthTrackerController::addActivity)
-        app.get("/api/users/{user-id}/activities", HealthTrackerController::getActivitiesByUserId)
-        app.get("/api/users/activities/{activity-id}", HealthTrackerController::getActivityById)
+        registerActivityRoutes(app)
 
         //register water intake routes
         registerWaterIntakeRoutes(app)
