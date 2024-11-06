@@ -8,7 +8,9 @@ fun registerActivityRoutes(app: Javalin) {
 
     app.get("/api/activities", controller::getAllActivities)
     app.post("/api/activities", controller::addActivity)
+    app.delete("/api/activities/{activity-id}", controller::deleteActivityByActivityId)
+    app.patch("/api/activities/{activity-id}", controller::updateActivity)
     app.get("/api/users/{user-id}/activities", controller::getActivitiesByUserId)
-    app.get("/api/users/activities/{activity-id}", controller::getActivityById)
+    app.delete("/api/users/{user-id}/activities", controller::deleteActivityByUserId)
 
 }
