@@ -11,4 +11,5 @@ object CalorieLogs : Table("calorie_log") {
     val recordedAt = datetime("recorded_at") // Date and time of the record, format "YYYY-MM-DD HH:MM:SS"
 
     override val primaryKey = PrimaryKey(CalorieLogs.id, name = "PK_CalorieLog_ID")
+
 }
