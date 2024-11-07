@@ -9,8 +9,11 @@ import ie.setu.domain.WaterIntake
 import ie.setu.domain.db.Users
 import ie.setu.domain.repository.WaterIntakeDAO
 import ie.setu.domain.db.WaterIntakes
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.*
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Assertions.assertThrows
+
 
 
 class WaterIntakeDAOTest {
@@ -62,6 +65,31 @@ class WaterIntakeDAOTest {
     }
 
     @Test
+    fun `test add water intake with negative or zero amount`() {
+        transaction {
+            val negativeAmountIntake = WaterIntake(
+                id = 0,
+                amount = -1.0, // Negative amount
+                recordedAt = DateTime.now(),
+                userId = 1
+            )
+            assertThrows(IllegalArgumentException::class.java) {
+                waterIntakeDAO.add(negativeAmountIntake)
+            }
+
+            val zeroAmountIntake = WaterIntake(
+                id = 0,
+                amount = 0.0, // Zero amount
+                recordedAt = DateTime.now(),
+                userId = 1
+            )
+            assertThrows(IllegalArgumentException::class.java) {
+                waterIntakeDAO.add(zeroAmountIntake)
+            }
+        }
+    }
+
+    @Test
     fun `test find water intake by user id`() {
         transaction {
             val waterIntake1 = WaterIntake(
@@ -82,6 +110,21 @@ class WaterIntakeDAOTest {
             assertEquals(2, results.size)
             assertEquals(1.5, results[0].amount)
             assertEquals(2.0, results[1].amount)
+        }
+    }
+
+    @Test
+    fun `test add water intake with non-existent user`() {
+        transaction {
+            val waterIntake = WaterIntake(
+                id = 0,
+                amount = 2.5,
+                recordedAt = DateTime.now(),
+                userId = 999 // Non-existent user ID
+            )
+            assertThrows(ExposedSQLException::class.java) {
+                waterIntakeDAO.add(waterIntake)
+            }
         }
     }
 

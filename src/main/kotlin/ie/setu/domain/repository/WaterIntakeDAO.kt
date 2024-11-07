@@ -1,9 +1,13 @@
 package ie.setu.domain.repository
 
 import ie.setu.domain.WaterIntake
+import ie.setu.domain.db.Users
 import ie.setu.domain.db.WaterIntakes
 import ie.setu.utils.mapToWaterIntake
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -21,15 +25,31 @@ class WaterIntakeDAO {
      * end: the day after current day 00:00
      * */
     fun findByUserIdAndDateRange(userId: Int, start: DateTime, end: DateTime): List<WaterIntake> = transaction {
+        // Check if the user exists
+        if (Users.selectAll().where { Users.id eq userId }.empty()) {
+            return@transaction emptyList()
+        }
+
+        // Validate the date range
+        if (start > end) {
+            throw IllegalArgumentException("Start date must be before end date.")
+        }
+
+        // Query the water intakes based on the user ID and date range
         WaterIntakes.selectAll().where {
-            (WaterIntakes.userId eq userId) and
+                    (WaterIntakes.userId eq userId) and
                     (WaterIntakes.recordedAt greaterEq start) and
-                    (WaterIntakes.recordedAt less end)
+                    (WaterIntakes.recordedAt lessEq end)
         }.map { mapToWaterIntake(it) }
     }
 
+
     // Add a new water intake record
     fun add(waterIntake: WaterIntake) = transaction {
+        if (waterIntake.amount <= 0) {
+            throw IllegalArgumentException("Water intake amount must be greater than zero.")
+        }
+
         WaterIntakes.insert {
             it[amount] = waterIntake.amount
             it[recordedAt] = waterIntake.recordedAt
