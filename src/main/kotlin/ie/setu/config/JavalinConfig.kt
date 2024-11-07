@@ -3,6 +3,7 @@ package ie.setu.config
 import ie.setu.routes.registerWaterIntakeRoutes
 import ie.setu.routes.registerUserRoutes
 import ie.setu.routes.registerActivityRoutes
+import ie.setu.routes.registerCalorieLogRoutes
 import io.javalin.Javalin
 import io.javalin.json.JavalinJackson
 import ie.setu.utils.jsonObjectMapper
@@ -32,6 +33,9 @@ class JavalinConfig {
 
         //register water intake routes
         registerWaterIntakeRoutes(app)
+
+        // register calorie log routes
+        registerCalorieLogRoutes(app)
 
     }
 

@@ -8,7 +8,7 @@ import ie.setu.domain.WaterIntake
 import io.javalin.http.Context
 import org.joda.time.DateTime
 
-class WaterIntakeController {
+class WaterIntakeController() {
 
     private val waterIntakeDAO = WaterIntakeDAO()
 

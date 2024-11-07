@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HealthTrackerControllerTest {
+class UsersControllerTest {
 
     private val db = DbConfig().getDbConnection()
     private val app = ServerContainer.instance

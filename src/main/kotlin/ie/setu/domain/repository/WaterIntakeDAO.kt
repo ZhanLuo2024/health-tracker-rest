@@ -5,9 +5,6 @@ import ie.setu.domain.db.Users
 import ie.setu.domain.db.WaterIntakes
 import ie.setu.utils.mapToWaterIntake
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 
@@ -37,7 +34,7 @@ class WaterIntakeDAO {
 
         // Query the water intakes based on the user ID and date range
         WaterIntakes.selectAll().where {
-                    (WaterIntakes.userId eq userId) and
+            (WaterIntakes.userId eq userId) and
                     (WaterIntakes.recordedAt greaterEq start) and
                     (WaterIntakes.recordedAt lessEq end)
         }.map { mapToWaterIntake(it) }

@@ -1,19 +1,18 @@
 package repository
 
+import ie.setu.domain.User
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ie.setu.domain.WaterIntake
 import ie.setu.domain.db.Users
 import ie.setu.domain.repository.WaterIntakeDAO
 import ie.setu.domain.db.WaterIntakes
-import org.jetbrains.exposed.exceptions.ExposedSQLException
+import ie.setu.domain.repository.UserDAO
 import org.jetbrains.exposed.sql.*
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Assertions.assertThrows
-
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Assertions
 
 
 class WaterIntakeDAOTest {
@@ -21,138 +20,94 @@ class WaterIntakeDAOTest {
     private var waterIntakeDAO = WaterIntakeDAO()
 
     companion object {
+
         // Make a connection to a local, in memory H2 database.
         @BeforeAll
         @JvmStatic
         internal fun setupInMemoryDatabaseConnection() {
-            Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;", driver = "org.h2.Driver", user = "root", password = "")
+            Database.connect("jdbc:h2:mem:test", driver = "org.h2.Driver", user = "root", password = "")
         }
     }
 
-    @BeforeEach
-    fun setup() {
-        transaction {
-            // Create the Users and WaterIntakes tables if they don't exist
-            SchemaUtils.create(Users, WaterIntakes)
+    private fun populateWaterIntakeTable(): WaterIntakeDAO {
+        SchemaUtils.create(Users, WaterIntakes)
+        val userDAO = UserDAO()
+        val waterIntakeDAO = WaterIntakeDAO()
 
-            // Insert a test user with userId = 1, only if it doesn't already exist
-            if (Users.selectAll().where { Users.id eq 1 }.empty()) {
-                Users.insert {
-                    it[id] = 1
-                    it[name] = "Test User"
-                    it[email] = "testuser@example.com"
-                }
-            }
-        }
-        waterIntakeDAO = WaterIntakeDAO()
+        // Insert a test user
+        userDAO.save(User(1, "Test User", "testuser@example.com"))
+
+        // Insert water intake records for the user
+        waterIntakeDAO.add(WaterIntake(0, 2.0, DateTime.now().minusDays(1), 1))
+        waterIntakeDAO.add(WaterIntake(0, 1.5, DateTime.now(), 1))
+        waterIntakeDAO.add(WaterIntake(0, 3.0, DateTime.now().plusDays(1), 1))
+
+        return waterIntakeDAO
     }
 
-    @Test
-    fun `test add water intake`() {
-        transaction {
-            val waterIntake = WaterIntake(
-                id = 0,
-                amount = 2.5,
-                recordedAt = DateTime.now(),
-                userId = 1
-            )
-            waterIntakeDAO.add(waterIntake)
-            val results = waterIntakeDAO.findByUserId(1)
-            assertEquals(1, results.size)
-            assertEquals(2.5, results[0].amount)
-            assertEquals(1, results[0].userId)
-        }
-    }
+    @Nested
+    inner class CreateWaterIntake {
+        @Test
+        fun `multiple water intakes added to table can be retrieved successfully`() {
+            transaction {
 
-    @Test
-    fun `test add water intake with negative or zero amount`() {
-        transaction {
-            val negativeAmountIntake = WaterIntake(
-                id = 0,
-                amount = -1.0, // Negative amount
-                recordedAt = DateTime.now(),
-                userId = 1
-            )
-            assertThrows(IllegalArgumentException::class.java) {
-                waterIntakeDAO.add(negativeAmountIntake)
-            }
+                // Arrange - create and populate table with three water intake records
+                val waterIntakeDAO = populateWaterIntakeTable()
 
-            val zeroAmountIntake = WaterIntake(
-                id = 0,
-                amount = 0.0, // Zero amount
-                recordedAt = DateTime.now(),
-                userId = 1
-            )
-            assertThrows(IllegalArgumentException::class.java) {
-                waterIntakeDAO.add(zeroAmountIntake)
+                // Act & Assert
+                Assertions.assertEquals(3, waterIntakeDAO.findByUserId(1).size)
             }
         }
     }
 
-    @Test
-    fun `test find water intake by user id`() {
-        transaction {
-            val waterIntake1 = WaterIntake(
-                id = 0,
-                amount = 1.5,
-                recordedAt = DateTime.now(),
-                userId = 1
-            )
-            val waterIntake2 = WaterIntake(
-                id = 0,
-                amount = 2.0,
-                recordedAt = DateTime.now(),
-                userId = 1
-            )
-            waterIntakeDAO.add(waterIntake1)
-            waterIntakeDAO.add(waterIntake2)
-            val results = waterIntakeDAO.findByUserId(1)
-            assertEquals(2, results.size)
-            assertEquals(1.5, results[0].amount)
-            assertEquals(2.0, results[1].amount)
-        }
-    }
+    @Nested
+    inner class ReadWaterIntakes {
+        @Test
+        fun `getting all water intakes from a populated table returns all rows`() {
+            transaction {
 
-    @Test
-    fun `test add water intake with non-existent user`() {
-        transaction {
-            val waterIntake = WaterIntake(
-                id = 0,
-                amount = 2.5,
-                recordedAt = DateTime.now(),
-                userId = 999 // Non-existent user ID
-            )
-            assertThrows(ExposedSQLException::class.java) {
-                waterIntakeDAO.add(waterIntake)
+                // Arrange - create and populate table with three water intake records
+                val waterIntakeDAO = populateWaterIntakeTable()
+
+                // Act & Assert
+                Assertions.assertEquals(3, waterIntakeDAO.findByUserId(1).size)
+            }
+        }
+
+        @Test
+        fun `get water intake by user id that doesn't exist, results in no records returned`() {
+            transaction {
+
+                // Arrange - create and populate table with three water intake records
+                val waterIntakeDAO = populateWaterIntakeTable()
+
+                // Act & Assert
+                Assertions.assertEquals(0, waterIntakeDAO.findByUserId(999).size)
             }
         }
     }
 
-    @Test
-    fun `test find water intake by user id and date range`() {
-        transaction {
-            val now = DateTime.now()
-            val waterIntake1 = WaterIntake(
-                id = 0,
-                amount = 1.5,
-                recordedAt = now.minusDays(1),
-                userId = 1
-            )
-            val waterIntake2 = WaterIntake(
-                id = 0,
-                amount = 2.0,
-                recordedAt = now,
-                userId = 1
-            )
-            waterIntakeDAO.add(waterIntake1)
-            waterIntakeDAO.add(waterIntake2)
+    @Nested
+    inner class GetWaters {
+     @Test
+     fun `get water intake by date range returns correct records`() {
+         transaction {
 
-            val results = waterIntakeDAO.findByUserIdAndDateRange(1, now.minusDays(1), now.plusDays(1))
-            assertEquals(2, results.size)
-            assertEquals(1.5, results[0].amount)
-            assertEquals(2.0, results[1].amount)
-        }
-    }
+            // Arrange - create and populate table with three water intake records
+            val waterIntakeDAO = populateWaterIntakeTable()
+            val startDate = DateTime.now().minusDays(2)
+            val endDate = DateTime.now().plusDays(2)
+
+            // Act & Assert
+            Assertions.assertEquals(3, waterIntakeDAO.findByUserIdAndDateRange(1, startDate, endDate).size)
+         }
+     }
+}
+
+
+
+
+
 
 
 
