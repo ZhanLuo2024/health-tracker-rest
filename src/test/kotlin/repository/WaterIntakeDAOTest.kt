@@ -1,9 +1,6 @@
 package repository
 
 import ie.setu.domain.User
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.joda.time.DateTime
-import org.junit.jupiter.api.Test
 import ie.setu.domain.WaterIntake
 import ie.setu.domain.db.Users
 import ie.setu.domain.repository.WaterIntakeDAO
@@ -13,6 +10,9 @@ import org.jetbrains.exposed.sql.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Assertions
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
+import org.junit.jupiter.api.Test
 
 
 class WaterIntakeDAOTest {
