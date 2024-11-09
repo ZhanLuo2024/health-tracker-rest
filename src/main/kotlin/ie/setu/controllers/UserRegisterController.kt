@@ -26,6 +26,11 @@ class UserRegisterController {
                 return
             }
 
+            if (password.length <= 6) {
+                ctx.status(400).result("Password must be greater than 6 characters")
+                return
+            }
+
             val newUser = UserRegistration(name = name, email = email, password = password, createdAt = DateTime.now())
 
             userRegisterDAO.registerNewUser(newUser)
