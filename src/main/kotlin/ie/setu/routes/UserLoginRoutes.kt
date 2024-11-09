@@ -9,4 +9,7 @@ fun registerUserRegisterRoute(app: Javalin) {
     app.post("/api/users/register", controller::registerUser)
     app.post("/api/users/login", controller::loginUser)
 
+
+
+
 }
