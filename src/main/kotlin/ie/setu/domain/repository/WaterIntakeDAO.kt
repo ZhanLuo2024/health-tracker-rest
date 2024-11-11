@@ -5,8 +5,11 @@ import ie.setu.domain.db.Users
 import ie.setu.domain.db.WaterIntakes
 import ie.setu.utils.mapToWaterIntake
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import org.jetbrains.exposed.sql.deleteWhere
+
 
 
 class WaterIntakeDAO {
@@ -53,4 +56,17 @@ class WaterIntakeDAO {
             it[userId] = waterIntake.userId
         }
     }
+
+    // Delete a water intake record by water intake ID
+    fun deleteByWaterIntakeId(waterIntakeId: Int): Boolean = transaction {
+        val deletedCount = WaterIntakes.deleteWhere { WaterIntakes.id eq waterIntakeId }
+        deletedCount > 0
+    }
+
+    // Delete all water intake records for a specific user
+    fun deleteByUserId(userId: Int): Boolean = transaction {
+        val deletedCount = WaterIntakes.deleteWhere { WaterIntakes.userId eq userId }
+        deletedCount > 0
+    }
+
 }

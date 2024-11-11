@@ -113,5 +113,43 @@ class WaterIntakeController() {
         }
     }
 
+    // Delete a water intake record by water intake ID
+    fun deleteWaterIntakesByWaterIntakeId(ctx: Context) {
+        try {
+            val waterIntakeId = ctx.pathParam("waterintakes-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid water intake ID format")
+                return
+            }
+
+            val deleted = waterIntakeDAO.deleteByWaterIntakeId(waterIntakeId)
+            if (deleted) {
+                ctx.status(200).result("Water intake record deleted successfully")
+            } else {
+                ctx.status(404).result("Water intake record not found")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
+    // Delete all water intake records for a specific user
+    fun deleteWaterIntakeByUserId(ctx: Context) {
+        try {
+            val userId = ctx.pathParam("user-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid user ID format")
+                return
+            }
+
+            val deleted = waterIntakeDAO.deleteByUserId(userId)
+            if (deleted) {
+                ctx.status(200).result("All water intake records for the user deleted successfully")
+            } else {
+                ctx.status(404).result("No water intake records found for the user")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
 
 }
