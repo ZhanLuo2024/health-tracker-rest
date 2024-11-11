@@ -40,6 +40,9 @@ This is the backend service for a health tracking web application. The backend i
 ### Calorie Log API
 - **GET /api/calories/user/{user-id}**: Get user calorie log by userId
 - **POST /api/calories**: Add calorie log record
+- **GET /api/calorielogs/{calorie-log-id}**: Get a specific calorie log by calorieLogId
+- **DELETE /api/users/{user-id}/calorielogs**: Delete all calorie logs for a specific user by userId
+- **DELETE /api/calorielogs/{calorie-log-id}**: Delete a specific calorie log by calorieLogId
 
 ### User Register and Login API
 - **POST /api/users/register**: Register new user
