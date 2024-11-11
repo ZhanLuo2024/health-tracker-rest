@@ -11,7 +11,7 @@ object Users : Table("users") {
     val name = varchar("name", 100)
     val email = varchar("email", 255)
     val password = varchar("password", 255)
-    val createdAt = datetime("created_at")
+    val isLoggedIn = bool("is_logged_in").default(false)
 
     override val primaryKey = PrimaryKey(id, name = "PK_Users_ID")
 }

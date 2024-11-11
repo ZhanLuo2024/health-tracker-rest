@@ -47,6 +47,25 @@ class WaterIntakeController() {
         }
     }
 
+    // Find a water intake record by its ID
+    fun getWaterIntakeById(ctx: Context) {
+        try {
+            val waterIntakeId = ctx.pathParam("waterintake-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid water intake ID format")
+                return
+            }
+
+            val waterIntake = waterIntakeDAO.findByWaterIntakeId(waterIntakeId)
+            if (waterIntake != null) {
+                ctx.json(waterIntake)
+            } else {
+                ctx.status(404).result("Water intake record not found")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
     // Add a new water intake record for a specific user
     fun addWaterIntake(ctx: Context) {
         // Add new water intake record

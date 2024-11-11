@@ -1,6 +1,7 @@
 package ie.setu.controllers
 
 import ie.setu.domain.UserRegistration
+import ie.setu.domain.repository.UserDAO
 import ie.setu.domain.repository.UserRegisterDAO
 import io.javalin.http.Context
 import org.joda.time.DateTime
@@ -10,56 +11,59 @@ class UserRegisterController {
 
     private val userRegisterDAO: UserRegisterDAO = UserRegisterDAO()
 
-    // register new user
+    // Register a new user
     fun registerUser(ctx: Context) {
-        try {
-            val name = ctx.formParam("name") ?: run {
-                ctx.status(400).result("Name is required")
-                return
-            }
-            val email = ctx.formParam("email") ?: run {
-                ctx.status(400).result("Email is required")
-                return
-            }
-            val password = ctx.formParam("password") ?: run {
-                ctx.status(400).result("Password is required")
-                return
-            }
+        val userRegisterDAO = UserRegisterDAO()
+        val name = ctx.formParam("name") ?: run {
+            ctx.status(400).result("Name is required")
+            return
+        }
+        val email = ctx.formParam("email") ?: run {
+            ctx.status(400).result("Email is required")
+            return
+        }
+        val password = ctx.formParam("password") ?: run {
+            ctx.status(400).result("Password is required")
+            return
+        }
 
-            if (password.length <= 6) {
-                ctx.status(400).result("Password must be greater than 6 characters")
-                return
-            }
+        val newUser = userRegisterDAO.registerUser(UserRegistration(name, email, password))
+        ctx.status(201).json(newUser)
+    }
 
-            val newUser = UserRegistration(name = name, email = email, password = password, createdAt = DateTime.now())
+    // User login
+    fun loginUser(ctx: Context) {
+        val userRegisterDAO = UserRegisterDAO()
+        val email = ctx.formParam("email") ?: run {
+            ctx.status(400).result("Email is required")
+            return
+        }
+        val password = ctx.formParam("password") ?: run {
+            ctx.status(400).result("Password is required")
+            return
+        }
 
-            userRegisterDAO.registerNewUser(newUser)
-            ctx.status(201).result("User registered successfully")
-        } catch (e: Exception) {
-            ctx.status(500).result("Internal server error")
+        val user = userRegisterDAO.findByEmailAndPassword(email, password)
+        if (user != null) {
+            userRegisterDAO.updateLoginStatus(user.id, true)
+            ctx.status(200).result("Login successful")
+        } else {
+            ctx.status(401).result("Invalid email or password")
         }
     }
 
-    fun loginUser(ctx: Context) {
-        try {
-            val email = ctx.formParam("email") ?: run {
-                ctx.status(400).result("Email is required")
-                return
-            }
-            val password = ctx.formParam("password") ?: run {
-                ctx.status(400).result("Password is required")
-                return
-            }
+    // User logout
+    fun logoutUser(ctx: Context) {
+        val userRegisterDAO = UserRegisterDAO()
+        val userId = ctx.pathParam("user-id").toIntOrNull() ?: run {
+            ctx.status(400).result("Invalid user ID format")
+            return
+        }
 
-            val isLogin = userRegisterDAO.findByEmailAndPassword(email, password)
-
-            if (!isLogin) {
-                ctx.status(200).result("Login successful")
-            } else {
-                ctx.status(401).result("Invalid email or password")
-            }
-        } catch (e: Exception) {
-            ctx.status(500).result("Internal server error")
+        if (userRegisterDAO.updateLoginStatus(userId, false)) {
+            ctx.status(200).result("Logout successful")
+        } else {
+            ctx.status(404).result("User not found")
         }
     }
 

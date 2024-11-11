@@ -1,6 +1,7 @@
 package ie.setu.domain.repository
 
 import ie.setu.domain.User
+import ie.setu.domain.UserRegistration
 import ie.setu.domain.db.Users
 import ie.setu.utils.mapToUser
 // sql
@@ -44,14 +45,35 @@ class UserDAO {
         }
     }
 
-    fun save(user: User) : Int?{
-        return transaction {
-            Users.insert {
-                it[name] = user.name
-                it[email] = user.email
-            } get Users.id
-        }
+    // Save a new user to the database (for UserRegistration)
+    fun save(user: UserRegistration): User = transaction {
+        val userId = Users.insert {
+            it[name] = user.name
+            it[email] = user.email
+            it[password] = user.password
+            it[isLoggedIn] = false  // Set default logged-in status to false
+        } get Users.id
+
+        User(
+            id = userId,
+            name = user.name,
+            email = user.email,
+            isLoggedIn = false
+        )
     }
+
+    // Overloaded save method to save a User object directly
+    fun save(user: User): User = transaction {
+        val userId = Users.insert {
+            it[name] = user.name
+            it[email] = user.email
+            it[password] = "" // Password not provided in User, add logic if needed
+            it[isLoggedIn] = user.isLoggedIn
+        } get Users.id
+
+        user.copy(id = userId)
+    }
+
 
     fun update(id: Int, user: User): Int{
         return transaction {

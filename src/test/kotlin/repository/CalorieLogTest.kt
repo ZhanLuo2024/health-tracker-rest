@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 class CalorieLogDAOTest {
 
     private val calorieLogDAO = CalorieLogsDAO()
-    val fixedTime = DateTime.now().withTimeAtStartOfDay()
+    val fixedTime: DateTime = DateTime.now().withTimeAtStartOfDay()
 
     companion object {
         // Make a connection to a local, in memory H2 database.
@@ -36,7 +36,6 @@ class CalorieLogDAOTest {
                 it[name] = "Test User"
                 it[email] = "testuser@example.com" // 添加 email 字段的值
                 it[password] = "default_password" // Provide a default password value
-                it[createdAt] = DateTime.now()
             }
 
             // Insert calorie records for the user

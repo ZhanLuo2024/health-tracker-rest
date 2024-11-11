@@ -19,6 +19,12 @@ class WaterIntakeDAO {
             .map { mapToWaterIntake(it) }
     }
 
+    fun findByWaterIntakeId(waterIntakeId: Int): WaterIntake? = transaction {
+        WaterIntakes.selectAll().where { WaterIntakes.id eq waterIntakeId }
+            .mapNotNull { mapToWaterIntake(it) }
+            .singleOrNull()
+    }
+
     /**
      * Find water intake records by user ID and date range
      * start: current day 00:00

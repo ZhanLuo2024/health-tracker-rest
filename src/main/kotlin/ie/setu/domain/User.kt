@@ -2,12 +2,16 @@ package ie.setu.domain
 
 import org.joda.time.DateTime
 
-data class User(var id: Int, var name: String, var email: String)
+data class User(
+    val id: Int = 0,
+    val name: String,
+    val email: String,
+    val isLoggedIn: Boolean = false
+)
 
-// This class is used specifically for user registration.
+// User Registration Class
 data class UserRegistration(
-    var name: String,
-    var email: String,
-    var password: String,
-    var createdAt: DateTime,
+    val name: String,
+    val email: String,
+    val password: String
 )

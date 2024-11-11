@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import ie.setu.utils.mapToCalorieLog
 
 
 class CalorieLogsDAO {
@@ -66,12 +67,6 @@ class CalorieLogsDAO {
         deletedCount > 0
     }
 
-    // Map the query result to a CalorieLog object
-    private fun mapToCalorieLog(row: ResultRow): CalorieLog = CalorieLog(
-        id = row[CalorieLogs.id],
-        userId = row[CalorieLogs.userId],
-        calories = row[CalorieLogs.calories],
-        recordedAt = row[CalorieLogs.recordedAt] // Can be converted to LocalDateTime
-    )
+
 
 }
