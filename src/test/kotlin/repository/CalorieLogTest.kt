@@ -35,6 +35,8 @@ class CalorieLogDAOTest {
                 it[id] = 1
                 it[name] = "Test User"
                 it[email] = "testuser@example.com" // 添加 email 字段的值
+                it[password] = "default_password" // Provide a default password value
+                it[createdAt] = DateTime.now()
             }
 
             // Insert calorie records for the user
@@ -96,6 +98,70 @@ class CalorieLogDAOTest {
                 assertThrows(IllegalArgumentException::class.java) {
                     calorieLogDAO.add(newCalorieLog)
                 }
+            }
+        }
+
+    }
+
+    @Nested
+    inner class FindCalorieLogById {
+        @Test
+        fun `find calorie log by ID - success`() {
+            transaction {
+                // Arrange - create and populate table with calorie log records
+                val calorieLogDAO = populateCalorieLogTable()
+
+                // Act & Assert - verify the calorie log is found successfully
+                Assertions.assertNotNull(calorieLogDAO.findByCalorieLogId(1))
+            }
+        }
+
+        @Test
+        fun `find calorie log by ID - not found`() {
+            transaction {
+                // Arrange - create and populate table with calorie log records
+                val calorieLogDAO = populateCalorieLogTable()
+
+                // Act & Assert - verify the calorie log is not found
+                Assertions.assertNull(calorieLogDAO.findByCalorieLogId(999))
+            }
+        }
+    }
+
+    @Nested
+    inner class DeleteCalorieLogs {
+        @Test
+        fun `delete all calorie logs by user ID - success`() {
+            transaction {
+                // Arrange - create and populate table with calorie log records
+                val calorieLogDAO = populateCalorieLogTable()
+
+                // Act & Assert - verify all logs for user are deleted successfully
+                Assertions.assertTrue(calorieLogDAO.deleteByUserId(1))
+                Assertions.assertEquals(0, calorieLogDAO.findByUserId(1).size)
+            }
+        }
+
+        @Test
+        fun `delete calorie log by ID - success`() {
+            transaction {
+                // Arrange - create and populate table with calorie log records
+                val calorieLogDAO = populateCalorieLogTable()
+
+                // Act & Assert - verify the specific calorie log is deleted successfully
+                Assertions.assertTrue(calorieLogDAO.deleteByCalorieLogId(1))
+                Assertions.assertNull(calorieLogDAO.findByCalorieLogId(1))
+            }
+        }
+
+        @Test
+        fun `delete calorie log by ID - not found`() {
+            transaction {
+                // Arrange - create and populate table with calorie log records
+                val calorieLogDAO = populateCalorieLogTable()
+
+                // Act & Assert - verify no log is found for deletion
+                Assertions.assertFalse(calorieLogDAO.deleteByCalorieLogId(999))
             }
         }
 
