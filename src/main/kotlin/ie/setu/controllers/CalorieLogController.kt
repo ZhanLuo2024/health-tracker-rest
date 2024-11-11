@@ -76,5 +76,62 @@ class CalorieLogController {
         }
     }
 
+    // Find a calorie log by calorie log ID
+    fun findByCalorieLogId(ctx: Context) {
+        try {
+            val calorieLogId = ctx.pathParam("calorie-log-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid calorie log ID format")
+                return
+            }
+
+            val calorieLog = calorieLogDAO.findByCalorieLogId(calorieLogId)
+            if (calorieLog != null) {
+                ctx.json(calorieLog)
+            } else {
+                ctx.status(404).result("Calorie log not found")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
+    // Delete all calorie logs for a specific user by user ID
+    fun deleteByUserId(ctx: Context) {
+        try {
+            val userId = ctx.pathParam("user-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid user ID format")
+                return
+            }
+
+            val deleted = calorieLogDAO.deleteByUserId(userId)
+            if (deleted) {
+                ctx.status(200).result("All calorie logs for the user deleted successfully")
+            } else {
+                ctx.status(404).result("No calorie logs found for the user")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
+    // Delete a calorie log by calorie log ID
+    fun deleteByCalorieLogId(ctx: Context) {
+        try {
+            val calorieLogId = ctx.pathParam("calorie-log-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid calorie log ID format")
+                return
+            }
+
+            val deleted = calorieLogDAO.deleteByCalorieLogId(calorieLogId)
+            if (deleted) {
+                ctx.status(200).result("Calorie log deleted successfully")
+            } else {
+                ctx.status(404).result("Calorie log not found")
+            }
+        } catch (e: Exception) {
+            ctx.status(500).result("Internal server error")
+        }
+    }
+
 
 }
