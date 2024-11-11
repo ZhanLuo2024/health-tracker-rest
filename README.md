@@ -34,6 +34,8 @@ This is the backend service for a health tracking web application. The backend i
 - **POST /api/waterintakes**: Add a new water intake record.
 - **GET /api/waterintakes/user/{user-id}**: Fetch all water intake records by userId.
 - **GET /api/waterintakes/daily/user/{user-id}**: Get daily waterIntake summary by userId
+- **DELETE /api/waterintakes/{waterintakes-id}**: Delete a specific water intake record by waterIntakeId.
+- **DELETE /api/users/{user-id}/waterintakes**: Delete all water intake records for a specific user by userId.
 
 ### Calorie Log API
 - **GET /api/calories/user/{user-id}**: Get user calorie log by userId
