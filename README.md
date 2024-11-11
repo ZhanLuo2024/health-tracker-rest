@@ -75,7 +75,3 @@ This is the backend service for a health tracking web application. The backend i
 - Ensure you have valid user IDs to associate activities and water intake records.
 
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
