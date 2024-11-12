@@ -15,13 +15,38 @@ This is the backend service for a health tracking web application. The backend i
 
 ## API Endpoints
 
+### Users API
+- **GET /api/users**: Get All Users info
+- **GET /api/users/{user-id}**: Query user info by userId
+- **GET /api/users/email/{email}**: Query user info by Email
+- **POST /api/users**: Add a new user
+- **DELETE /api/users/{user-id}**: Delete user by userId
+- **PATCH /api/users/{user-id}**: Update user info by userId
+
 ### Activity API
 - **POST /api/activities**: Add a new activity.
-- **GET /api/users/{user-id}/activities**: Fetch all activities of a specific user.
+- **GET /api/users/{user-id}/activities**: Fetch all activities by userId.
+- **PATCH /api/activities/{activity-id}**: Update Activity info by activityId
+- **DELETE /api/activities/{activity-id}**: Delete activity by activityId
+- **DELETE /api/users/{user-id}/activities**: Delete activity by userId
 
 ### Water Intake API
-- **POST /api/water-intakes**: Add a new water intake record.
-- **GET /api/users/{user-id}/water-intakes**: Fetch all water intake records of a specific user.
+- **POST /api/waterintakes**: Add a new water intake record.
+- **GET /api/waterintakes/user/{user-id}**: Fetch all water intake records by userId.
+- **GET /api/waterintakes/daily/user/{user-id}**: Get daily waterIntake summary by userId
+- **DELETE /api/waterintakes/{waterintakes-id}**: Delete a specific water intake record by waterIntakeId.
+- **DELETE /api/users/{user-id}/waterintakes**: Delete all water intake records for a specific user by userId.
+
+### Calorie Log API
+- **GET /api/calories/user/{user-id}**: Get user calorie log by userId
+- **POST /api/calories**: Add calorie log record
+- **GET /api/calorielogs/{calorie-log-id}**: Get a specific calorie log by calorieLogId
+- **DELETE /api/users/{user-id}/calorielogs**: Delete all calorie logs for a specific user by userId
+- **DELETE /api/calorielogs/{calorie-log-id}**: Delete a specific calorie log by calorieLogId
+
+### User Register and Login API
+- **POST /api/users/register**: Register new user
+- **POST /api/users/login**: User login
 
 ## Running the Application
 1. **Clone the Repository**:
@@ -48,9 +73,5 @@ This is the backend service for a health tracking web application. The backend i
 ## How to Use
 - Use tools like **Postman** to send HTTP requests to the endpoints.
 - Ensure you have valid user IDs to associate activities and water intake records.
-
-
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
