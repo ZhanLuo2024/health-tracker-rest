@@ -16,4 +16,6 @@ fun registerWaterIntakeRoutes(app: Javalin) {
     app.delete("/api/users/{user-id}/waterintakes", controller::deleteWaterIntakeByUserId)
 
 
+
+
 }
