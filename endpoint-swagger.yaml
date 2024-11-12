@@ -1,0 +1,500 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Health Tracker API
+  description: This API provides endpoints for handling CRUD operations on the Health Tracker data.
+  contact:
+    name: Zhan Luo 
+    email: 20109459@mail.wit.ie
+paths:
+  /api/users/{user-id}:
+    get:
+      tags:
+        - User
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: This is a specific user in the app
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - User
+      description: Delete a user by user-id
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: The user has been deleted
+    patch:
+      tags:
+        - User
+      description: Update a user by user-id
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: The user has been updated
+  /api/users:
+    get:
+      tags:
+        - User
+      responses:
+        200:
+          description: This is a list of the users in the app
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - User
+      description: Add a user to the app
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: The user has been created
+  /api/users/email/{email}:
+    get:
+      tags:
+        - User
+      description: Get a user by email
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+            example: joe@soap.com
+      responses:
+        200:
+          description: This is a specific user in the app by email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/{user-id}/activities:
+    get:
+      tags:
+        - Activity
+      description: Get all activities for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: A list of activities for the specified user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+    delete:
+      tags:
+        - Activity
+      description: Delete all activities for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: All activities for the specified user have been deleted
+  /api/activities:
+    get:
+      tags:
+        - Activity
+      description: Get all activities in the database regardless of user id
+      responses:
+        200:
+          description: A list of all activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+    post:
+      tags:
+        - Activity
+      description: Save an activity to the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: The activity has been created
+  /api/activities/{activity-id}:
+    delete:
+      tags:
+        - Activity
+      description: Delete an activity by activity-id
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdPath'
+      responses:
+        200:
+          description: The activity has been deleted
+    patch:
+      tags:
+        - Activity
+      description: Update an activity by activity-id
+      parameters:
+        - $ref: '#/components/parameters/ActivityIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activity'
+      responses:
+        200:
+          description: The activity has been updated
+  
+  
+  /api/waterintakes/{waterintake-id}:
+    get:
+      tags:
+        - WaterIntake
+      description: Get a specific water intake record by ID
+      parameters:
+        - in: path
+          name: waterintake-id
+          required: true
+          schema:
+            type: integer
+            example: 1002
+      responses:
+        200:
+          description: A specific water intake record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaterIntake'
+  /api/waterIntakes/user/{user-id}:
+    get:
+      tags:
+        - WaterIntake
+      description: Get water intake records for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: A list of water intake records for the specified user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WaterIntake'              
+  /api/waterintakes/daily/user/{user-id}:
+    get:
+      tags:
+        - WaterIntake
+      description: Get daily water intake summary for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: Daily water intake summary for the specified user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                    example: 3232
+                  date:
+                    type: string
+                    format: date
+                    example: '2024-11-10'
+                  totalAmount:
+                    type: number
+                    example: 2.5
+  /api/waterintakes:
+    post:
+      tags:
+        - WaterIntake
+      description: Add a water intake record
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaterIntake'
+      responses:
+        200:
+          description: The water intake record has been created
+  /api/waterintakes/{waterintakes-id}:
+    delete:
+      tags:
+        - WaterIntake
+      description: Delete a water intake record by ID
+      parameters:
+        - in: path
+          name: waterintakes-id
+          required: true
+          schema:
+            type: integer
+            example: 1002
+      responses:
+        200:
+          description: The water intake record has been deleted
+  /api/users/{user-id}/waterintakes:
+    delete:
+      tags:
+        - WaterIntake
+      description: Delete all water intake records for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: All water intake records for the specified user have been deleted        
+
+# Calorie Log Endpoints
+  /api/calorielogs/{calorie-log-id}:
+    get:
+      tags:
+        - CalorieLog
+      description: Get a specific calorie log record by ID
+      parameters:
+        - in: path
+          name: calorie-log-id
+          required: true
+          schema:
+            type: integer
+            example: 2001
+      responses:
+        200:
+          description: A specific calorie log record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalorieLog'
+    delete:
+      tags:
+        - CalorieLog
+      description: Delete a calorie log record by ID
+      parameters:
+        - in: path
+          name: calorie-log-id
+          required: true
+          schema:
+            type: integer
+            example: 2001
+      responses:
+        200:
+          description: The calorie log record has been deleted          
+  /api/calories/user/{user-id}:
+    get:
+      tags:
+        - CalorieLog
+      description: Get calorie log records for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: A list of calorie log records for the specified user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalorieLog'
+  /api/calories:
+    post:
+      tags:
+        - CalorieLog
+      description: Add a calorie log record
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalorieLog'
+      responses:
+        200:
+          description: The calorie log record has been created        
+  /api/users/{user-id}/calorielogs:
+    delete:
+      tags:
+        - CalorieLog
+      description: Delete all calorie log records for a specific user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: All calorie log records for the specified user have been deleted
+  
+  
+  # User Login Endpoints
+  /api/users/register:
+    post:
+      tags:
+        - UserLogin
+      description: Register a new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        201:
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/login:
+    post:
+      tags:
+        - UserLogin
+      description: Login an existing user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: joe@soap.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        200:
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...       
+  /api/users/logout/{user-id}:
+    post:
+      tags:
+        - UserLogin
+      description: Logout an existing user
+      parameters:
+        - $ref: '#/components/parameters/UserIdPath'
+      responses:
+        200:
+          description: User successfully logged out        
+          
+          
+          
+components:
+  parameters:
+    UserIdPath:
+      in: path
+      name: user-id
+      description: User id path parameter
+      required: true
+      schema:
+        type: integer
+        example: 3232
+    ActivityIdPath:
+      in: path
+      name: activity-id
+      description: Activity id path parameter
+      required: true
+      schema:
+        type: integer
+        example: 1001
+  schemas:
+    User:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 3232
+        name:
+          type: string
+          example: Joe Soap
+        email:
+          type: string
+          example: joe@soap.com
+    UserRegistration:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string      
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1001
+        description:
+          type: string
+          example: Running in the park
+        duration:
+          type: number
+          example: 45.5
+        calories:
+          type: integer
+          example: 300
+        started:
+          type: string
+          format: date-time
+          example: '2024-11-10T09:00:00Z'
+        userId:
+          type: integer
+          example: 3232
+    WaterIntake:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1002
+        amount:
+          type: number
+          example: 1.0
+        recordedAt:
+          type: string
+          format: date-time
+          example: '2024-11-10T14:00:00Z'
+        userId:
+          type: integer
+          example: 3232      
+    CalorieLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2001
+        calories:
+          type: integer
+          example: 2500
+        recordedAt:
+          type: string
+          format: date-time
+          example: '2024-11-10T18:00:00Z'
+        userId:
+          type: integer
+          example: 3232      
+          
+          
+          
+          
+          
+          
+                      
