@@ -15,4 +15,5 @@ fun registerWaterIntakeRoutes(app: Javalin) {
     app.delete("/api/waterintakes/{waterintakes-id}", controller::deleteWaterIntakesByWaterIntakeId)
     app.delete("/api/users/{user-id}/waterintakes", controller::deleteWaterIntakeByUserId)
 
+
 }
