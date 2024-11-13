@@ -58,6 +58,7 @@ class UserDAO {
             id = userId,
             name = user.name,
             email = user.email,
+            password = user.password,
             isLoggedIn = false
         )
     }

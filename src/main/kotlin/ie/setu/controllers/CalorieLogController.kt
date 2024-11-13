@@ -3,6 +3,7 @@ package ie.setu.controllers
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import ie.setu.domain.CalorieLog
 import ie.setu.domain.repository.CalorieLogsDAO
 import io.javalin.http.Context
@@ -51,21 +52,25 @@ class CalorieLogController {
     // Add a new calorie record for a specific user
     fun addCalorieLog(ctx: Context) {
         try {
-            val userId = ctx.queryParam("user-id")?.toIntOrNull() ?: run {
+            val objectMapper = jacksonObjectMapper()
+            val waterIntakeMap: Map<String, Any> = objectMapper.readValue(ctx.body())
+
+            val userId = waterIntakeMap["user-id"] as? Int ?: run {
                 ctx.status(400).result("Invalid user ID format")
                 return
             }
-            val calories = ctx.queryParam("calories")?.toIntOrNull() ?: run {
+
+            val calories = waterIntakeMap["calories"] as? Int ?: run {
                 ctx.status(400).result("Invalid calories format")
                 return
             }
 
-            val recordedAtString = ctx.queryParam("recorded-at") ?: run {
-                ctx.status(400).result("Invalid recorded-at format")
+            val dateStr = waterIntakeMap["recorded-at"] as? String ?: run {
+                ctx.status(400).result("Invalid user ID format")
                 return
             }
 
-            val recordedAt = DateTime.parse(recordedAtString) // Parsing ISO 8601 format string
+            val recordedAt = DateTime.parse(dateStr) // Parsing ISO 8601 format string
 
             val newCalorieLog = CalorieLog(userId = userId, calories = calories, recordedAt = recordedAt)
             calorieLogDAO.add(newCalorieLog)

@@ -24,6 +24,7 @@ class UserRegisterDAO {
             id = userId,
             name = user.name,
             email = user.email,
+            password = user.password,
             isLoggedIn = false
         )
     }

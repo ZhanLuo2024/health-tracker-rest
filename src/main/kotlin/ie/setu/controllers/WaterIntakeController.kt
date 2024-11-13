@@ -3,6 +3,7 @@ package ie.setu.controllers
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import ie.setu.domain.repository.WaterIntakeDAO
 import ie.setu.domain.WaterIntake
 import io.javalin.http.Context
@@ -70,21 +71,25 @@ class WaterIntakeController() {
     fun addWaterIntake(ctx: Context) {
         // Add new water intake record
         try {
-            val userId = ctx.queryParam("user-id")?.toIntOrNull() ?: run {
-                ctx.status(400).result("Invalid user ID format")
+            val objectMapper = jacksonObjectMapper()
+            val waterIntakeMap: Map<String, Any> = objectMapper.readValue(ctx.body())
+
+            val userId = waterIntakeMap["user-id"] as? Int ?: run {
+                ctx.status(400).result("user-id is required")
                 return
             }
-            val amount = ctx.queryParam("amount")?.toDoubleOrNull() ?: run {
+
+            val amount = waterIntakeMap["amount"] as? Double ?: run {
                 ctx.status(400).result("Invalid water amount format")
                 return
             }
 
-            val recordedAtString = ctx.queryParam("recorded-at") ?: run {
+            val dateString = waterIntakeMap["recordedAtString"] as? String ?: run {
                 ctx.status(400).result("Invalid recorded-at format")
                 return
             }
 
-            val recordedAt = DateTime.parse(recordedAtString) // Parsing ISO 8601 format string
+            val recordedAt = DateTime.parse(dateString) // Parsing ISO 8601 format string
 
             val newWaterIntake = WaterIntake(userId = userId, amount = amount, recordedAt = recordedAt)
             waterIntakeDAO.add(newWaterIntake)

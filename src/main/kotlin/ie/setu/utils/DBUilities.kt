@@ -14,6 +14,7 @@ fun mapToUser(row: ResultRow): User = User(
     id = row[Users.id],
     name = row[Users.name],
     email = row[Users.email],
+    password = row[Users.password],
     isLoggedIn = row[Users.isLoggedIn]
 )
 
