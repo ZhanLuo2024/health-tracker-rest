@@ -8,9 +8,8 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions
-import org.joda.time.DateTime
-import org.junit.jupiter.api.Assertions.assertTrue
-
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,7 +66,7 @@ class UserRigsterDAOTest {
             val user = UserRegistration("Test User 3", "user3@example.com", "")
 
             // Act & Assert - verify saving the user fails due to missing or invalid password
-            Assertions.assertThrows(IllegalArgumentException::class.java) {
+            assertThrows(ExposedSQLException::class.java) {
                 userRegisterDAO.registerUser(user)
             }
         }
@@ -77,12 +76,24 @@ class UserRigsterDAOTest {
     fun `save user with short password - failure`() {
         transaction {
             // Arrange - create a new user with a password shorter than 6 characters
-            val user = UserRegistration("Test User 4", "user4@example.com", "short")
 
+            val user = UserRegistration("Test User 4", "user4@example.com", "short")
             // Act & Assert - verify saving the user fails due to short password
-            Assertions.assertThrows(IllegalArgumentException::class.java) {
+            assertThrows(ExposedSQLException::class.java){
                 userRegisterDAO.registerUser(user)
             }
+        }
+    }
+
+    @Test
+    fun `update user login status - success`() {
+        transaction {
+            val userDAO = populateUserTable()
+            // Act - 更新用戶登錄狀態為 true
+            val result = userDAO.updateLoginStatus(1, true)
+
+            // Assert - 確認更新操作成功
+            Assertions.assertTrue(result, "Login status should be updated successfully")
         }
     }
 

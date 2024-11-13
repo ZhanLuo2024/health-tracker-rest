@@ -90,6 +90,7 @@ class CalorieLogDAOTest {
                     it[id] = 1
                     it[name] = "Test User"
                     it[email] = "testuser@example.com"
+                    it[password] = "default_password"
                 }
 
                 // Act & Assert
