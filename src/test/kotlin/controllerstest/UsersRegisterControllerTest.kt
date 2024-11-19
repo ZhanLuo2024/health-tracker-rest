@@ -43,7 +43,6 @@ class UsersRegisterControllerTest {
             // Set up routes
             registerRoute(app)
 
-            // Connect to an in-memory H2 database
             // Use the test environment database connection
             db
 
@@ -137,7 +136,7 @@ class UsersRegisterControllerTest {
         @Test
         fun `logout user successfully - integration test`() {
 
-            val userId = 117
+            val userId = 127
             val response = Unirest.get("$origin/api/users/logout/$userId").asJson()
 
             // Assert - verify response status

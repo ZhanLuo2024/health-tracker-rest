@@ -95,11 +95,16 @@ class UserRegisterController {
     // User logout
     fun logoutUser(ctx: Context) {
         try {
-            val objectMapper = jacksonObjectMapper()
-            val userPayload: Map<String, Any> = objectMapper.readValue(ctx.body())
+            // 从查询参数中读取 id
+//            val userId = ctx.queryParam("id")?.toIntOrNull()
+//
+//            if (userId == null) {
+//                ctx.status(400).result("userId is required and must be a valid number")
+//                return
+//            }
 
-            val userId = userPayload["id"] as? Int ?: run {
-                ctx.status(400).result("userId is required")
+            val userId = ctx.pathParam("user-id").toIntOrNull() ?: run {
+                ctx.status(400).result("Invalid user ID format")
                 return
             }
 
