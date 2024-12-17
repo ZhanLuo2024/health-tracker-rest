@@ -57,7 +57,6 @@ class JavalinConfig {
 
         //activity
         app.get("/activities", VueComponent("<user-activity-overview></user-activity-overview>"))
-        app.get("/users/{user-id}/activities/{activity-id}", VueComponent("<user-activity-profile></user-activity-profile>"))
 
     }
 
