@@ -19,6 +19,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/activities">Activities</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/waterintake">WaterIntakes</a>
+            </li>
           </ul>
         </div>
       </nav>

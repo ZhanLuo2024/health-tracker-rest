@@ -31,7 +31,7 @@
           <h5 class="card-header">Water Intake</h5>
           <div class="card-body">
             <h5 class="card-title">{{waterIntakes.length}} records</h5>
-            <a href="/activities" class="btn btn-primary">More Details...</a>
+            <a href="/waterintake" class="btn btn-primary">More Details...</a>
           </div>
         </div>
       </div>

@@ -58,6 +58,8 @@ class JavalinConfig {
         //activity
         app.get("/activities", VueComponent("<user-activity-overview></user-activity-overview>"))
 
+        //waterIntake
+        app.get("/waterintake", VueComponent("<water-intake-overview></water-intake-overview>"))
     }
 
     private fun getRemoteAssignedPort(): Int {

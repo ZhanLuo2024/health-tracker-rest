@@ -34,25 +34,40 @@
       </table>
       <!-- Add Activity Button -->
       <button @click="toggleAddActivity" class="add-button">Add Activity</button>
+
       <!-- Add Activity Form -->
       <div v-if="showAddForm" class="add-form">
-        <div>
-          <label>Description</label>
-          <input v-model="newActivity.description" type="text" placeholder="Enter description" />
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input
+              id="description"
+              v-model="newActivity.description"
+              placeholder="Enter description"
+          />
         </div>
-        <div>
-          <label>Duration (minutes)</label>
-          <input v-model="newActivity.duration" type="number" placeholder="Enter duration" />
+        <div class="form-group">
+          <label for="duration">Duration (minutes)</label>
+          <input
+              id="duration"
+              v-model.number="newActivity.duration"
+              type="number"
+              placeholder="Enter duration"
+          />
         </div>
-        <div>
-          <label>Calories</label>
-          <input v-model="newActivity.calories" type="number" placeholder="Enter calories burned" />
+        <div class="form-group">
+          <label for="calories">Calories</label>
+          <input
+              id="calories"
+              v-model.number="newActivity.calories"
+              type="number"
+              placeholder="Enter calories"
+          />
         </div>
-        <div>
-          <label>Started</label>
-          <input v-model="newActivity.started" type="datetime-local" />
+        <div class="form-group">
+          <label for="started">Started</label>
+          <input id="started" v-model="newActivity.started" type="datetime-local" />
         </div>
-        <button @click="addActivity" class="submit-button">Add</button>
+        <button @click="addActivity" class="save-button">Add</button>
       </div>
     </div>
   </app-layout>
@@ -143,29 +158,27 @@ app.component("user-activity-overview", {
 </script>
 
 <style scoped>
-.add-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+h2 {
+  margin-bottom: 20px;
 }
-.add-form {
-  margin-top: 20px;
-  padding: 10px;
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
   border: 1px solid #ddd;
+  padding: 8px;
 }
-.add-form div {
-  margin-bottom: 10px;
+th {
+  background-color: #f4f4f4;
+  text-align: center;
 }
-.submit-button {
-  margin-top: 10px;
-  padding: 5px 15px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
+td {
+  text-align: center;
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 .delete-button {
   padding: 5px 10px;
@@ -173,5 +186,65 @@ app.component("user-activity-overview", {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
 }
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.add-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 每个表单组之间的间距 */
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.save-button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
 </style>
