@@ -22,6 +22,21 @@
         </div>
       </div>
     </div>
+
+    <!-- new row for cards -->
+    <div class="row mt-4">
+      <div class="col">
+        <div class="card">
+          <h5 class="card-header">Water Intake</h5>
+          <div class="card-body">
+            <h5 class="card-title">{{waterIntakes.length}} records</h5>
+            <a href="/activities" class="btn btn-primary">More Details...</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </app-layout>
 </template>
 
@@ -31,7 +46,8 @@ app.component('home-page',
       template: "#home-page",
       data: () => ({
         users: [],
-        activities: []
+        activities: [],
+        waterIntakes: [],
       }),
       created() {
         axios.get("/api/users")
@@ -40,6 +56,9 @@ app.component('home-page',
         axios.get("/api/activities")
             .then(res => this.activities = res.data)
             .catch(() => alert("Error while fetching activities"));
+        axios.get("/api/waterIntakes/user/2")
+            .then(res => this.waterIntakes = res.data.waterIntakes)
+            .catch(() => alert("Error while fetching records"));
       }
     });
 </script>
