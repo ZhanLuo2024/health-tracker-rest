@@ -23,7 +23,6 @@
       </div>
     </div>
 
-
     <!-- new row for cards -->
     <div class="row mt-4">
       <div class="col">
