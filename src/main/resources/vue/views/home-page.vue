@@ -34,6 +34,15 @@
           </div>
         </div>
       </div>
+      <div class="col">
+        <div class="card">
+          <h5 class="card-header">Calorie Log</h5>
+          <div class="card-body">
+            <h5 class="card-title">{{calorieLogs.length}} logs</h5>
+            <a href="/calorielogs" class="btn btn-primary">More Details...</a>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -48,6 +57,7 @@ app.component('home-page',
         users: [],
         activities: [],
         waterIntakes: [],
+        calorieLogs: [],
       }),
       created() {
         axios.get("/api/users")
@@ -58,6 +68,9 @@ app.component('home-page',
             .catch(() => alert("Error while fetching activities"));
         axios.get("/api/waterIntakes/user/2")
             .then(res => this.waterIntakes = res.data.waterIntakes)
+            .catch(() => alert("Error while fetching records"));
+        axios.get("/api/calories/user/2")
+            .then(res => this.calorieLogs = res.data.calorieLogs)
             .catch(() => alert("Error while fetching records"));
       }
     });

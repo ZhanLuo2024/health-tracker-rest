@@ -22,6 +22,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/waterintake">WaterIntakes</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/calorielogs">CalorieLogs</a>
+            </li>
           </ul>
         </div>
       </nav>
