@@ -66,7 +66,7 @@ class CalorieLogController {
             }
 
             val dateStr = waterIntakeMap["recorded-at"] as? String ?: run {
-                ctx.status(400).result("Invalid user ID format")
+                ctx.status(400).result("Invalid date format")
                 return
             }
 

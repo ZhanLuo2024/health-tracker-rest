@@ -106,7 +106,28 @@ app.component("user-calorie-record", {
       this.showAddForm = !this.showAddForm;
     },
     addCalorieLog() {
-
+      if (!this.newCalorieLog.calorie || !this.newCalorieLog.recordedAt) {
+        alert("Please fill in all fields.");
+        return;
+      }
+      axios
+          .post("/api/calories", {
+            "user-id": 2,
+            calories: parseFloat(this.newCalorieLog.calorie),
+            "recorded-at": this.newCalorieLog.recordedAt,
+          })
+          .then(() => {
+            this.fetchCalorieLogs();
+            this.resetForm();
+            this.showAddForm = false;
+          })
+          .catch((error) => {
+            console.error("Error adding calorie log:", error.response?.data || error.message);
+            alert("Failed to add record.");
+          });
+    },
+    resetForm() {
+      this.newCalorieLog = { calorie: "", recordedAt: "" };
     },
     formatDate(dateTime) {
       // Format the date to a human-readable format
