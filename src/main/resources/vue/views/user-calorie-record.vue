@@ -2,7 +2,32 @@
 <template id="user-calorie-record">
   <app-layout>
     <div>
-      Hello world
+      <!-- Page Title -->
+      <h2>Calorie Log Overview</h2>
+
+      <!-- Total Calorie Summary -->
+      <div class="summary">
+        <p><strong>Total Calories:</strong> {{ totalCalories }}</p>
+        <p><strong>Number of Records:</strong> {{ calorieLogs.length }}</p>
+      </div>
+
+      <!-- Calorie Log Records Table -->
+      <table>
+        <thead>
+        <tr>
+          <th style="text-align: left;">#</th>
+          <th style="text-align: right;">Calories</th>
+          <th style="text-align: center;">Recorded At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(log, index) in calorieLogs" :key="log.id">
+          <td style="text-align: left;">{{ index + 1 }}</td>
+          <td style="text-align: right;">{{ log.calories }}</td>
+          <td style="text-align: center;">{{ formatDate(log.recordedAt) }}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </app-layout>
 </template>
@@ -11,7 +36,118 @@
 app.component("user-calorie-record", {
   template: "#user-calorie-record",
   data: () => ({
-
+    totalCalories: 0,
+    calorieLogs: [],
   }),
+  methods: {
+    formatDate(date) {
+      const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+      return new Date(date).toLocaleString(undefined, options);
+    },
+  },
+  created() {
+    axios
+        .get("/api/calories/user/2")
+        .then((response) => {
+          this.totalCalories = response.data.totalCalories;
+          this.calorieLogs = response.data.calorieLogs;
+        })
+        .catch(() => {
+          alert("Error while fetching calorie logs");
+        });
+  },
 });
 </script>
+
+<style scoped>
+h2 {
+  margin-bottom: 20px;
+}
+.summary {
+  margin-bottom: 20px;
+}
+.summary p {
+  margin: 5px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+th {
+  background-color: #f4f4f4;
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.delete-button {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.delete-button:hover {
+  background-color: #c82333;
+}
+.add-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 每个表单组之间的间距 */
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.save-button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+</style>
