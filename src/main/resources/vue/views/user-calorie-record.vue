@@ -27,11 +27,36 @@
           <td style="text-align: right;">{{ log.calories }}</td>
           <td style="text-align: center;">{{ formatDate(log.recordedAt) }}</td>
           <td style="text-align: center;">
-            <button @click="deleteWaterIntake(intake.id, index)" class="delete-button">Delete</button>
+            <button @click="deleteCalorieLog(intake.id, index)" class="delete-button">Delete</button>
           </td>
         </tr>
         </tbody>
       </table>
+
+      <!-- Add Water Intake Form Toggle -->
+      <button @click="toggleAddForm" class="add-button">Add Calorie Log</button>
+
+      <!-- Add Water Intake Form -->
+      <div v-if="showAddForm" class="add-form">
+        <div class="form-group">
+          <label>Amount (L)
+            <input
+                v-model.number="newCalorieLog.calories" type="number" placeholder="Enter calories"
+            />
+          </label>
+        </div>
+        <div class="form-group">
+          <label>Recorded At
+            <input
+                v-model="newCalorieLog.recordedAt" type="datetime-local"
+            />
+          </label>
+        </div>
+        <div class="form-group">
+          <button @click="addCalorieLog" class="save-button">Add</button>
+        </div>
+      </div>
+
     </div>
   </app-layout>
 </template>
@@ -42,6 +67,11 @@ app.component("user-calorie-record", {
   data: () => ({
     totalCalories: 0,
     calorieLogs: [],
+    showAddForm: false, // Toggle add form visibility
+    newWaterIntake: {
+      calories: 0,
+      recordedAt: "",
+    },
   }),
   created() {
     axios
@@ -55,6 +85,19 @@ app.component("user-calorie-record", {
         });
   },
   methods: {
+    deleteCalorieLog(id, index) {
+      // Delete a specific calorie log record
+      axios
+          .delete(`/api/calorielogs/${id}`)
+          .then(() => {
+            this.calorieLogs.splice(index, 1); // Remove record from the list
+            this.totalCalories = this.calorieLogs.reduce((sum, log) => sum + log.calories, 0); // Recalculate total
+          })
+          .catch((error) => {
+            console.error("Error deleting calorie log record:", error);
+            alert("Failed to delete record.");
+          });
+    },
     formatDate(dateTime) {
       // Format the date to a human-readable format
       const date = new Date(dateTime);
