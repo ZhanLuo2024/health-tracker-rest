@@ -27,7 +27,7 @@
           <td style="text-align: right;">{{ log.calories }}</td>
           <td style="text-align: center;">{{ formatDate(log.recordedAt) }}</td>
           <td style="text-align: center;">
-            <button @click="deleteCalorieLog(intake.id, index)" class="delete-button">Delete</button>
+            <button @click="deleteCalorieLog(log.id, index)" class="delete-button">Delete</button>
           </td>
         </tr>
         </tbody>
@@ -74,17 +74,21 @@ app.component("user-calorie-record", {
     },
   }),
   created() {
-    axios
-        .get("/api/calories/user/2")
-        .then((response) => {
-          this.totalCalories = response.data.totalCalories;
-          this.calorieLogs = response.data.calorieLogs;
-        })
-        .catch(() => {
-          alert("Error while fetching calorie logs");
-        });
+    this.fetchCalorieLogs();
   },
   methods: {
+    fetchCalorieLogs() {
+      axios
+          .get("/api/calories/user/2")
+          .then((response) => {
+            this.totalCalories = response.data.totalCalories;
+            this.calorieLogs = response.data.calorieLogs;
+          })
+          .catch((error) => {
+            console.error("Error fetch calorie log record:", error);
+            alert("Error while fetching calorie logs");
+          });
+    },
     deleteCalorieLog(id, index) {
       // Delete a specific calorie log record
       axios
