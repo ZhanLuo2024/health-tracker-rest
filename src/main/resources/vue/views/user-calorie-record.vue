@@ -39,9 +39,9 @@
       <!-- Add Water Intake Form -->
       <div v-if="showAddForm" class="add-form">
         <div class="form-group">
-          <label>Amount (L)
+          <label>Calorie
             <input
-                v-model.number="newCalorieLog.calories" type="number" placeholder="Enter calories"
+                v-model.number="newCalorieLog.calorie" type="number" placeholder="Enter calories"
             />
           </label>
         </div>
@@ -68,8 +68,8 @@ app.component("user-calorie-record", {
     totalCalories: 0,
     calorieLogs: [],
     showAddForm: false, // Toggle add form visibility
-    newWaterIntake: {
-      calories: 0,
+    newCalorieLog: {
+      calorie: 0,
       recordedAt: "",
     },
   }),
@@ -101,6 +101,12 @@ app.component("user-calorie-record", {
             console.error("Error deleting calorie log record:", error);
             alert("Failed to delete record.");
           });
+    },
+    toggleAddForm() {
+      this.showAddForm = !this.showAddForm;
+    },
+    addCalorieLog() {
+
     },
     formatDate(dateTime) {
       // Format the date to a human-readable format
