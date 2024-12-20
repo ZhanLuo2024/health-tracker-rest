@@ -18,6 +18,7 @@
           <th style="text-align: left;">#</th>
           <th style="text-align: right;">Calories</th>
           <th style="text-align: center;">Recorded At</th>
+          <th style="text-align: center;">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -25,6 +26,9 @@
           <td style="text-align: left;">{{ index + 1 }}</td>
           <td style="text-align: right;">{{ log.calories }}</td>
           <td style="text-align: center;">{{ formatDate(log.recordedAt) }}</td>
+          <td style="text-align: center;">
+            <button @click="deleteWaterIntake(intake.id, index)" class="delete-button">Delete</button>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -39,12 +43,6 @@ app.component("user-calorie-record", {
     totalCalories: 0,
     calorieLogs: [],
   }),
-  methods: {
-    formatDate(date) {
-      const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
-      return new Date(date).toLocaleString(undefined, options);
-    },
-  },
   created() {
     axios
         .get("/api/calories/user/2")
@@ -55,6 +53,13 @@ app.component("user-calorie-record", {
         .catch(() => {
           alert("Error while fetching calorie logs");
         });
+  },
+  methods: {
+    formatDate(dateTime) {
+      // Format the date to a human-readable format
+      const date = new Date(dateTime);
+      return date.toLocaleString();
+    }
   },
 });
 </script>
