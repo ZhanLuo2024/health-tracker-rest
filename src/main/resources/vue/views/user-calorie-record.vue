@@ -75,6 +75,7 @@ app.component("user-calorie-record", {
   }),
   created() {
     this.fetchCalorieLogs();
+
   },
   methods: {
     fetchCalorieLogs() {
