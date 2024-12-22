@@ -11,6 +11,19 @@
         <p><strong>Number of Records:</strong> {{ calorieLogs.length }}</p>
       </div>
 
+      <!-- Chart -->
+      <div class="chart-section">
+        <button class="btn btn-primary mb-3" @click="toggleChart">
+          {{ showChart ? 'Hide Water Intake Chart' : 'Show Water Intake Chart' }}
+        </button>
+        <div v-show="showChart" class="chart-container">
+          <canvas id="waterIntakeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Add spacing between chart and table -->
+      <div style="margin-top: 20px;"></div>
+
       <!-- Calorie Log Records Table -->
       <table>
         <thead>

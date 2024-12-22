@@ -82,6 +82,7 @@ app.component("water-intake-overview", {
     totalWaterIntake: 0,
     showAddForm: false, // Toggle add form visibility
     showChart: false,
+    chartInstance: null, // init chart instance
     newWaterIntake: {
       amount: 0,
       recordedAt: "",
@@ -164,8 +165,13 @@ app.component("water-intake-overview", {
       // get canvas content
       const ctx = document.getElementById('waterIntakeChart').getContext('2d');
 
+      // Memory leak prevention
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
+
       // create line chart
-      new Chart(ctx, {
+      this.chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
           labels: this.waterIntakes.map(intake => this.formatDate(intake.recordedAt)),
@@ -184,6 +190,7 @@ app.component("water-intake-overview", {
           maintainAspectRatio: false,
         },
       });
+
     },
     formatDate(dateTime) {
       // Format the date to a human-readable format
