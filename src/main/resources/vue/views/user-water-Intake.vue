@@ -127,13 +127,17 @@ app.component("water-intake-overview", {
       axios
           .post("/api/waterintakes", {
             "user-id": 2,
-            amount: parseFloat(this.newWaterIntake.amount),
+            amount: Number(this.newWaterIntake.amount).toFixed(2),
             recordedAtString: this.newWaterIntake.recordedAt,
           })
           .then(() => {
             this.fetchWaterIntakeRecords();
             this.resetForm();
             this.showAddForm = false;
+            // chart data reload
+            if (this.showChart) {
+              this.renderChart(); // reload when add new data
+            }
           })
           .catch((error) => {
             console.error("Error adding water intake record:", error.response?.data || error.message);
@@ -169,8 +173,8 @@ app.component("water-intake-overview", {
             {
               label: 'Water Intake (L)',
               data: this.waterIntakes.map(intake => intake.amount),
-              borderColor: 'rgba(75, 192, 192, 1)',
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(87, 160, 229, 1)',
+              backgroundColor: 'rgba(87, 160, 229, 0.2)',
               fill: true,
             },
           ],

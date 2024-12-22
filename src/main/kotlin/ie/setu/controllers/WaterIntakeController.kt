@@ -79,7 +79,8 @@ class WaterIntakeController() {
                 return
             }
 
-            val amount = waterIntakeMap["amount"] as? Double ?: run {
+            val amountString = waterIntakeMap["amount"] as? String
+            val amount = amountString?.toDoubleOrNull() ?: run {
                 ctx.status(400).result("Invalid water amount format")
                 return
             }
