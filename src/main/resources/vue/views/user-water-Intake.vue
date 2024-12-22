@@ -11,6 +11,19 @@
         <p><strong>Number of Records:</strong> {{ waterIntakes.length }}</p>
       </div>
 
+      <!-- Chart -->
+      <div class="chart-section">
+        <button class="btn btn-primary mb-3" @click="toggleChart">
+          {{ showChart ? 'Hide Water Intake Chart' : 'Show Water Intake Chart' }}
+        </button>
+        <div v-show="showChart" class="chart-container">
+          <canvas id="waterIntakeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Add spacing between chart and table -->
+      <div style="margin-top: 20px;"></div>
+
       <!-- Water Intake Records Table -->
       <table>
         <thead>
@@ -58,7 +71,7 @@
       </div>
 
     </div>
-  </app-layout>>
+  </app-layout>
 </template>
 
 <script>
@@ -68,6 +81,7 @@ app.component("water-intake-overview", {
     waterIntakes: [], // List of water intake records
     totalWaterIntake: 0,
     showAddForm: false, // Toggle add form visibility
+    showChart: false,
     newWaterIntake: {
       amount: 0,
       recordedAt: "",
@@ -135,6 +149,37 @@ app.component("water-intake-overview", {
     calculateTotalWaterIntake() {
       // Recalculate total water intake
       this.totalWaterIntake = this.waterIntakes.reduce((sum, intake) => sum + intake.amount, 0);
+    },
+    toggleChart() {
+      this.showChart = !this.showChart;
+      if (this.showChart) {
+        this.renderChart();
+      }
+    },
+    renderChart() {
+      // get canvas content
+      const ctx = document.getElementById('waterIntakeChart').getContext('2d');
+
+      // create line chart
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.waterIntakes.map(intake => this.formatDate(intake.recordedAt)),
+          datasets: [
+            {
+              label: 'Water Intake (L)',
+              data: this.waterIntakes.map(intake => intake.amount),
+              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
     },
     formatDate(dateTime) {
       // Format the date to a human-readable format
@@ -235,5 +280,10 @@ input {
 
 .save-button:hover {
   background-color: #218838;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
 }
 </style>
