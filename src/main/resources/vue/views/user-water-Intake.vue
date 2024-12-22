@@ -186,16 +186,19 @@ app.component("water-intake-overview", {
           ],
         },
         options: {
-          responsive: true,
           maintainAspectRatio: false,
         },
       });
-
     },
     formatDate(dateTime) {
       // Format the date to a human-readable format
       const date = new Date(dateTime);
       return date.toLocaleString();
+    },
+    beforeDestroy() {
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
     },
   },
 });

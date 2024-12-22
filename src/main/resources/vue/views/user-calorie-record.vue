@@ -17,7 +17,7 @@
           {{ showChart ? 'Hide Water Intake Chart' : 'Show Water Intake Chart' }}
         </button>
         <div v-show="showChart" class="chart-container">
-          <canvas id="waterIntakeChart"></canvas>
+          <canvas id="calorieChart"></canvas>
         </div>
       </div>
 
@@ -81,6 +81,8 @@ app.component("user-calorie-record", {
     totalCalories: 0,
     calorieLogs: [],
     showAddForm: false, // Toggle add form visibility
+    showChart: false,
+    chartInstance: null,
     newCalorieLog: {
       calorie: 0,
       recordedAt: "",
@@ -143,10 +145,50 @@ app.component("user-calorie-record", {
     resetForm() {
       this.newCalorieLog = { calorie: "", recordedAt: "" };
     },
+    toggleChart() {
+      this.showChart = !this.showChart;
+      if (this.showChart) {
+        this.renderChart();
+      }
+    },
+    renderChart() {
+      // get canvas content
+      const ctx = document.getElementById('calorieChart').getContext('2d');
+
+      // Memory leak prevention
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
+
+      // create line chart
+      this.chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: this.calorieLogs.map(log => this.formatDate(log.recordedAt)),
+          datasets: [
+            {
+              label: 'Calorie Log',
+              data: this.calorieLogs.map(log => log.calories),
+              backgroundColor: 'rgba(75, 192, 192, 0.5)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+        },
+      });
+    },
     formatDate(dateTime) {
       // Format the date to a human-readable format
       const date = new Date(dateTime);
       return date.toLocaleString();
+    },
+    beforeDestroy() {
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
     }
   },
 });
@@ -242,5 +284,10 @@ input {
 
 .save-button:hover {
   background-color: #218838;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
 }
 </style>
