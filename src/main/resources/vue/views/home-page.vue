@@ -107,7 +107,7 @@ app.component('home-page',
         setFontSize(size) {
           const root = document.documentElement;
           root.style.setProperty('--font-size', size === 'small' ? '16px' : size === 'medium' ? '20px' : '24px');
-        },
+        }
       },
     });
 </script>
