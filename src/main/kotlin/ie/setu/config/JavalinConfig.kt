@@ -63,6 +63,9 @@ class JavalinConfig {
 
         //calorie log
         app.get("/calorielogs", VueComponent("<user-calorie-record></user-calorie-record>"))
+
+        //user login
+        app.get("/login", VueComponent("<user-login></user-login>"))
     }
 
     private fun getRemoteAssignedPort(): Int {

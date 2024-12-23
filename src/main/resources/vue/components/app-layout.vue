@@ -25,6 +25,9 @@
             <li class="nav-item">
               <a class="nav-link" href="/calorielogs">CalorieLogs</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">login</a>
+            </li>
           </ul>
         </div>
       </nav>
