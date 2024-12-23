@@ -9,6 +9,7 @@ app.component("user-login", {
   template: "#user-login",
   data: () => ({
 
+
   }),
   created() {
     this.fetchWaterIntakeRecords();
