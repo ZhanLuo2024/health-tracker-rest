@@ -2,7 +2,7 @@
 <!--suppress ALL -->
 <template id="home-page">
   <app-layout>
-    <div class="row">
+    <div class="row mt-4">
       <div class="col">
         <div class="card">
           <h5 class="card-header">Registered Users</h5>
@@ -45,6 +45,36 @@
       </div>
     </div>
 
+    <!-- change font size card -->
+    <div class="row mt-4">
+      <div class="col">
+        <div class="card">
+          <h5 class="card-header">Small Font</h5>
+          <div class="card-body">
+            <h5 class="card-title">Detail content</h5>
+            <button class="btn btn-primary" @click="setFontSize('small')">Apply</button>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h5 class="card-header">Medium Font</h5>
+          <div class="card-body">
+            <h5 class="card-title">Default content</h5>
+            <button class="btn btn-primary" @click="setFontSize('medium')">Apply</button>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h5 class="card-header">Large Font</h5>
+          <div class="card-body">
+            <h5 class="card-title">Important information</h5>
+            <button class="btn btn-primary" @click="setFontSize('large')">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </app-layout>
 </template>
@@ -72,6 +102,18 @@ app.component('home-page',
         axios.get("/api/calories/user/2")
             .then(res => this.calorieLogs = res.data.calorieLogs)
             .catch(() => alert("Error while fetching records"));
-      }
+      },
+      methods: {
+        setFontSize(size) {
+          const root = document.documentElement;
+          root.style.setProperty('--font-size', size === 'small' ? '16px' : size === 'medium' ? '20px' : '24px');
+        },
+      },
     });
 </script>
+
+<style scoped>
+.card-title {
+  font-size: var(--font-size, 16px);
+}
+</style>
