@@ -25,8 +25,8 @@
       <div style="margin-top: 20px;"></div>
 
       <!-- Water Intake Records Table -->
-      <table>
-        <thead>
+      <table class="table table-striped table-hover table-bordered text-center">
+      <thead>
         <tr>
           <th style="text-align: left;">#</th>
           <th style="text-align: right;">Amount (L)</th>
